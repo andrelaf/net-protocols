@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Amqp/">
+    <Project Path="Amqp/ProtocolLab.Amqp.csproj" />
+  </Folder>
+  <Folder Name="/Coap/">
+    <Project Path="Coap/ProtocolLab.Coap.csproj" />
+  </Folder>
+  <Folder Name="/Gateway/">
+    <Project Path="Gateway/ProtocolLab.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/Mqtt/">
+    <Project Path="Mqtt/ProtocolLab.Mqtt.csproj" />
+  </Folder>
+  <Folder Name="/Quic/">
+    <Project Path="Quic/ProtocolLab.Quic.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/ProtocolLab.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Udp/">
+    <Project Path="Udp/ProtocolLab.Udp.csproj" />
+  </Folder>
+</Solution>

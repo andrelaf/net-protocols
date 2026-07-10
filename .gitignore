@@ -427,3 +427,16 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# ---------------------------------------------------------------- Protocol Lab
+
+# Frontend
+frontend/dist/
+frontend/node_modules/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+
+# infra/.env só contém as portas publicadas pelos brokers, nenhum segredo, e o
+# docker-compose depende dele. A regra `*.env` acima o pegaria; desfazemos aqui.
+!infra/.env

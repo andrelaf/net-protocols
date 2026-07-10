@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\ProtocolLab.Shared.csproj" />
+    <ProjectReference Include="..\Udp\ProtocolLab.Udp.csproj" />
+    <ProjectReference Include="..\Quic\ProtocolLab.Quic.csproj" />
+    <ProjectReference Include="..\Mqtt\ProtocolLab.Mqtt.csproj" />
+    <ProjectReference Include="..\Amqp\ProtocolLab.Amqp.csproj" />
+    <ProjectReference Include="..\Coap\ProtocolLab.Coap.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
+
+    <!--
+      Referência direta apenas para elevar uma dependência transitiva.
+      Microsoft.AspNetCore.OpenApi 10.0.9 traz Microsoft.OpenApi 2.0.0, afetado por
+      GHSA-v5pm-xwqc-g5wc (referências circulares de schema abortam o parsing), corrigido
+      em 2.7.5. Remova esta linha quando o pacote da ASP.NET Core já trouxer >= 2.7.5.
+    -->
+    <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

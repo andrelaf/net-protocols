@@ -1,0 +1,59 @@
+# Brokers necessários para as abas MQTT e AMQP.
+#
+#   docker compose -f infra/docker-compose.yml up -d
+#
+# UDP, QUIC e CoAP não aparecem aqui: os servidores desses protocolos rodam dentro do
+# próprio gateway .NET. Isso é intencional — eles são protocolos ponto-a-ponto, sem
+# intermediário. MQTT e AMQP são protocolos *mediados por broker*, e essa diferença
+# arquitetural é uma das lições centrais do laboratório: você não "usa MQTT" sem
+# operar (ou pagar por) um broker.
+#
+# As portas publicadas no host vêm de infra/.env, deslocadas das canônicas para conviver
+# com outros containers que você já tenha rodando.
+
+name: protocol-lab
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: protocol-lab-mosquitto
+    restart: unless-stopped
+    ports:
+      - "${MQTT_PORT:-1883}:1883"      # MQTT sobre TCP — usado pelo gateway .NET
+      - "${MQTT_WS_PORT:-9883}:9001"   # MQTT sobre WebSocket — um navegador fala direto aqui
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/log
+    healthcheck:
+      # mosquitto_sub sai com código 0 assim que conecta e recebe o retained de $SYS.
+      # O $$ escapa a interpolação de variáveis do compose.
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/broker/version' -C 1 -W 2 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: protocol-lab-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "${AMQP_PORT:-5673}:5672"                 # AMQP 0-9-1 — o que a demo usa
+      - "${AMQP_MANAGEMENT_PORT:-15673}:15672"    # UI de gestão (guest/guest)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  mosquitto-data:
+  mosquitto-logs:
+  rabbitmq-data:
